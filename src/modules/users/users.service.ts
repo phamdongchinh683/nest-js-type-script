@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { User } from 'src/models/user.model';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './interfaces/user.interface';
 
 @Injectable()
 export class UsersService {
   private readonly users: User[] = [];
-  create(user: User): string {
+  create(user: CreateUserDto): string {
     this.users.push(user);
     return `Created`;
   }

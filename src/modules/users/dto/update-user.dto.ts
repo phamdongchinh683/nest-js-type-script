@@ -1,6 +1,6 @@
-export interface UpdateUserDto {
+export class UpdateUserDto {
   username: string;
   password: string;
   fullName: string;
-  age: string;
+  age: number;
 }
