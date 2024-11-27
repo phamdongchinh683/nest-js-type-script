@@ -1,37 +1,41 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.model';
+import { Repository } from 'typeorm/repository/Repository';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  private readonly users: User[] = [];
-  create(user: CreateUserDto): string {
-    this.users.push(user);
-    return `Created`;
+  constructor(
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
+  ) { }
+  async create(user: CreateUserDto): Promise<string> {
+    this.usersRepository.save(user);
+    return `created`;
   }
-  findAll(): User[] {
-    return this.users;
-  }
-  getUserById(id: string): User | null {
-    const userIndex = this.users.find((user) => user.id === id);
-    return userIndex || null;
-  }
-  updateUserById(id: string, field: UpdateUserDto): User | string {
-    const index = this.users.findIndex((user) => user.id === id);
-    if (index === -1) {
-      return `User not found`;
+  async findAll(): Promise<User[] | string> {
+    const users = await this.usersRepository.find();
+    if (users.length === 0) {
+      return 'Current users empty';
     }
-    this.users[index] = { ...this.users[index], ...field };
-    return this.users[index];
+    return this.usersRepository.find();
   }
-  deleteById(id: string): string {
-    const userIndex = this.users.findIndex((user) => user.id === id);
-    if (userIndex === -1) {
-      return `User not found in list`;
-    } else {
-      this.users.splice(userIndex, 1);
-      return `User deleted`;
+  async update(id: string, user: UpdateUserDto): Promise<string> {
+    this.usersRepository.update(id, user);
+    return `Updated`;
+  }
+
+  async findOne(id: string): Promise<User | null> {
+    return this.usersRepository.findOneBy({ id });
+  }
+
+  async remove(id: string): Promise<string> {
+    const user = await this.usersRepository.delete(id);
+    if (user.affected === 0) {
+      return `This user has been removed`;
     }
+    return `deleted`;
   }
 }

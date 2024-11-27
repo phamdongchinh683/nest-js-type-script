@@ -5,6 +5,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -17,17 +18,19 @@ import { UsersService } from './users.service';
 
 @Controller('api/users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
+
   @Get()
-  async findAll(): Promise<ResponseData<User[]>> {
+  async findAll(): Promise<ResponseData<User[] | string>> {
     try {
-      const users = this.usersService.findAll();
-      return new ResponseData<User[]>(
+      const users = await this.usersService.findAll();
+      return new ResponseData<User[] | string>(
         users,
         httpStatus.SUCCESS,
         httpMessage.SUCCESS,
       );
     } catch (e) {
+      console.error(e);
       return new ResponseData<User[]>(
         null,
         httpStatus.ERROR,
@@ -35,19 +38,20 @@ export class UsersController {
       );
     }
   }
+
   @Post()
   async create(
-    @Body()
-    createUserDto: CreateUserDto,
+    @Body() createUserDto: CreateUserDto,
   ): Promise<ResponseData<string>> {
     try {
-      const message = this.usersService.create(createUserDto);
+      const message = await this.usersService.create(createUserDto);
       return new ResponseData<string>(
         message,
         httpStatus.SUCCESS,
         httpMessage.SUCCESS,
       );
     } catch (e) {
+      console.error(e);
       return new ResponseData<string>(
         null,
         httpStatus.ERROR,
@@ -56,25 +60,11 @@ export class UsersController {
     }
   }
 
-  @Patch(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
-  ): Promise<ResponseData<User>> {
-    const updatedUser = this.usersService.updateUserById(id, updateUserDto);
-    if (typeof updatedUser === 'string') {
-      throw new NotFoundException(updatedUser);
-    }
-    return new ResponseData<User>(
-      updatedUser,
-      httpStatus.SUCCESS,
-      httpMessage.SUCCESS,
-    );
-  }
-
   @Get(':id')
-  async findOneUser(@Param('id') id: string): Promise<ResponseData<User>> {
-    const user = this.usersService.getUserById(id);
+  async findOneUser(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<ResponseData<User>> {
+    const user = await this.usersService.findOne(id);
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
@@ -85,11 +75,29 @@ export class UsersController {
     );
   }
 
+  @Patch(':id')
+  async update(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<ResponseData<string>> {
+    const updatedUser = await this.usersService.update(id, updateUserDto);
+    if (!updatedUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return new ResponseData<string>(
+      updatedUser,
+      httpStatus.SUCCESS,
+      httpMessage.SUCCESS,
+    );
+  }
+
   @Delete(':id')
-  async deleteUser(@Param('id') id: string): Promise<ResponseData<string>> {
-    const result = this.usersService.deleteById(id);
-    if (result === 'User not found in list') {
-      throw new NotFoundException(result);
+  async deleteUser(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<ResponseData<string>> {
+    const result = await this.usersService.remove(id);
+    if (!result) {
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
     return new ResponseData<string>(
       result,

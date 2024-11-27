@@ -1,14 +1,9 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
-import { AuthModule } from './auth/auth.module';
+import { User } from './entities/user.model';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { UsersController } from './modules/users/users.controller';
 import { UsersModule } from './modules/users/users.module';
@@ -16,7 +11,6 @@ import { UsersService } from './modules/users/users.service';
 dotenv.config({ debug: false });
 @Module({
   imports: [
-    UsersModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DATABASE_HOST,
@@ -24,7 +18,7 @@ dotenv.config({ debug: false });
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [],
+      entities: [User],
       synchronize: true,
     }),
     ConfigModule.forRoot({
@@ -33,20 +27,14 @@ dotenv.config({ debug: false });
       ignoreEnvFile: true,
       ignoreEnvVars: true,
     }),
-    AuthModule,
+    UsersModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],
 })
 export class AppModule implements NestModule {
-  constructor(private dataSource: DataSource) { }
+  constructor(private dataSource: DataSource) {}
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware)
-      .exclude(
-        { path: 'api/users', method: RequestMethod.GET },
-        { path: 'api/users', method: RequestMethod.POST },
-      )
-      .forRoutes(UsersController);
+    consumer.apply(LoggerMiddleware).forRoutes(UsersController);
   }
 }
