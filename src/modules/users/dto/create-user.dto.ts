@@ -1,7 +1,4 @@
-import { IsNumberString } from 'class-validator';
-
-export class CreateUserDto {
-  @IsNumberString()
+export interface CreateUserDto {
   id: string;
   username: string;
   password: string;

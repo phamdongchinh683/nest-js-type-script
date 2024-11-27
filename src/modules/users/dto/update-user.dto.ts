@@ -1,4 +1,4 @@
-export class UpdateUserDto {
+export interface UpdateUserDto {
   username: string;
   password: string;
   fullName: string;

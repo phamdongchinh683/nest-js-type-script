@@ -8,17 +8,16 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { User } from 'src/entities/user.model';
 import { ResponseData } from 'src/global/globalClass';
 import { httpMessage, httpStatus } from 'src/global/globalEnum';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
-import { User } from 'src/models/user.model';
 
-@Controller('users')
+@Controller('api/users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
-
+  constructor(private readonly usersService: UsersService) { }
   @Get()
   async findAll(): Promise<ResponseData<User[]>> {
     try {
