@@ -1,16 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.model';
 import { Repository } from 'typeorm/repository/Repository';
+import { AuthLogin } from '../auth/dto/auth-login.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserResponse } from './dto/user-response.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-  ) { }
+  ) {}
   async create(user: CreateUserDto): Promise<string> {
     this.usersRepository.save(user);
     return `created`;
@@ -37,5 +39,14 @@ export class UsersService {
       return `This user has been removed`;
     }
     return `deleted`;
+  }
+  async findByUsername(data: AuthLogin): Promise<UserResponse> {
+    const user = await this.usersRepository.findOne({
+      where: { username: data.username },
+    });
+    if (!user || user.password !== data.password) {
+      throw new UnauthorizedException('Username or password is incorrect');
+    }
+    return user;
   }
 }
