@@ -15,12 +15,11 @@ import { JwtResponse } from './dto/jwt-response.dto';
 
 @Controller('api/auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
-
+  constructor(private authService: AuthService) { }
   @Post('login')
-  async login(@Body() data: AuthLogin) {
+  async signIn(@Body() data: AuthLogin) {
     try {
-      const user = await this.authService.findUser(data);
+      const user = await this.authService.signIn(data);
       return new ResponseData<JwtResponse>(
         user,
         httpStatus.SUCCESS,
@@ -34,6 +33,23 @@ export class AuthController {
       );
     }
   }
+  // @Post('/signup')
+  // async signUp(@Body() data: CreateUserDto) {
+  //   try {
+  //     const user = await this.authService.findUser(data);
+  //     return new ResponseData<JwtResponse>(
+  //       user,
+  //       httpStatus.SUCCESS,
+  //       httpMessage.SUCCESS,
+  //     );
+  //   } catch (e: any) {
+  //     return new ResponseData<string>(
+  //       e.message || 'Authentication failed',
+  //       httpStatus.ERROR,
+  //       httpMessage.ERROR,
+  //     );
+  //   }
+  // }
 
   @UseGuards(AuthGuard)
   @Get('profile')

@@ -30,7 +30,6 @@ export class UsersController {
         httpMessage.SUCCESS,
       );
     } catch (e) {
-      console.error(e);
       return new ResponseData<User[]>(
         null,
         httpStatus.ERROR,
@@ -51,7 +50,6 @@ export class UsersController {
         httpMessage.SUCCESS,
       );
     } catch (e) {
-      console.error(e);
       return new ResponseData<string>(
         null,
         httpStatus.ERROR,

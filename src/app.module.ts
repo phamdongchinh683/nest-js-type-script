@@ -1,6 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
@@ -8,6 +8,7 @@ import { User } from './entities/user.model';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { AuthController } from './modules/auth/auth.controller';
 import { AuthService } from './modules/auth/auth.service';
+import { jwtConstants } from './modules/auth/constants';
 import { UsersController } from './modules/users/users.controller';
 import { UsersModule } from './modules/users/users.module';
 import { UsersService } from './modules/users/users.service';
@@ -30,10 +31,15 @@ dotenv.config({ debug: false });
       ignoreEnvFile: true,
       ignoreEnvVars: true,
     }),
+    JwtModule.register({
+      global: true,
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '60s' },
+    }),
     UsersModule,
   ],
   controllers: [UsersController, AuthController],
-  providers: [UsersService, AuthService, JwtService],
+  providers: [UsersService, AuthService],
 })
 export class AppModule implements NestModule {
   constructor(private dataSource: DataSource) {}

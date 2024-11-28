@@ -12,7 +12,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-  ) {}
+  ) { }
   async create(user: CreateUserDto): Promise<string> {
     this.usersRepository.save(user);
     return `created`;
@@ -48,5 +48,13 @@ export class UsersService {
       throw new UnauthorizedException('Username or password is incorrect');
     }
     return user;
+  }
+
+  async signUp(data: CreateUserDto): Promise<string> {
+    const user = await this.usersRepository.save(data);
+    if (!user) {
+      return `this information exists`;
+    }
+    return 'success';
   }
 }
