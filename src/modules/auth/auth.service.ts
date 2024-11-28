@@ -11,6 +11,7 @@ export class AuthService {
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
   ) { }
+
   async signIn(data: AuthLogin): Promise<JwtResponse> {
     const user = await this.userService.findByUsername(data);
     const payload = { sub: user.id, username: user.username };

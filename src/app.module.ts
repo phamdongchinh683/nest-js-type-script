@@ -8,7 +8,7 @@ import { User } from './entities/user.model';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { AuthController } from './modules/auth/auth.controller';
 import { AuthService } from './modules/auth/auth.service';
-import { jwtConstants } from './modules/auth/constants';
+import { jwtConstants, tokenLife } from './modules/auth/constants';
 import { UsersController } from './modules/users/users.controller';
 import { UsersModule } from './modules/users/users.module';
 import { UsersService } from './modules/users/users.service';
@@ -34,7 +34,7 @@ dotenv.config({ debug: false });
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: tokenLife },
     }),
     UsersModule,
   ],
@@ -42,7 +42,7 @@ dotenv.config({ debug: false });
   providers: [UsersService, AuthService],
 })
 export class AppModule implements NestModule {
-  constructor(private dataSource: DataSource) {}
+  constructor(private dataSource: DataSource) { }
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes(UsersController);
   }
