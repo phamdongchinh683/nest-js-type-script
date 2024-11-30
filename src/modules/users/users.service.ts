@@ -22,7 +22,7 @@ export class UsersService {
     if (users.length === 0) {
       return 'Current users empty';
     }
-    return this.usersRepository.find();
+    return users;
   }
   async update(id: string, user: UpdateUserDto): Promise<string> {
     this.usersRepository.update(id, user);

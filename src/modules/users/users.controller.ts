@@ -5,9 +5,10 @@ import {
   Get,
   NotFoundException,
   Param,
-  ParseUUIDPipe,
   Patch,
   Post,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { User } from 'src/entities/user.model';
 import { ResponseData } from 'src/global/globalClass';
@@ -18,7 +19,7 @@ import { UsersService } from './users.service';
 
 @Controller('api/users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Get()
   async findAll(): Promise<ResponseData<User[] | string>> {
@@ -39,6 +40,7 @@ export class UsersController {
   }
 
   @Post()
+  @UsePipes(new ValidationPipe({ transform: true }))
   async create(
     @Body() createUserDto: CreateUserDto,
   ): Promise<ResponseData<string>> {
@@ -51,7 +53,7 @@ export class UsersController {
       );
     } catch (e) {
       return new ResponseData<string>(
-        null,
+        e.message,
         httpStatus.ERROR,
         httpMessage.ERROR,
       );
@@ -60,7 +62,8 @@ export class UsersController {
 
   @Get(':id')
   async findOneUser(
-    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('id')
+    id: string,
   ): Promise<ResponseData<User>> {
     const user = await this.usersService.findOne(id);
     if (!user) {
@@ -74,8 +77,9 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @UsePipes(new ValidationPipe({ transform: true }))
   async update(
-    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<ResponseData<string>> {
     const updatedUser = await this.usersService.update(id, updateUserDto);
@@ -91,7 +95,8 @@ export class UsersController {
 
   @Delete(':id')
   async deleteUser(
-    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('id')
+    id: string,
   ): Promise<ResponseData<string>> {
     const result = await this.usersService.remove(id);
     if (!result) {

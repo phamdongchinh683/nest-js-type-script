@@ -33,24 +33,6 @@ export class AuthController {
       );
     }
   }
-  // @Post('/signup')
-  // async signUp(@Body() data: CreateUserDto) {
-  //   try {
-  //     const user = await this.authService.findUser(data);
-  //     return new ResponseData<JwtResponse>(
-  //       user,
-  //       httpStatus.SUCCESS,
-  //       httpMessage.SUCCESS,
-  //     );
-  //   } catch (e: any) {
-  //     return new ResponseData<string>(
-  //       e.message || 'Authentication failed',
-  //       httpStatus.ERROR,
-  //       httpMessage.ERROR,
-  //     );
-  //   }
-  // }
-
   @UseGuards(AuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
