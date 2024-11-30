@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { User } from 'src/entities/user.model';
 import { hashPassword } from 'src/utils/hashHelper';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
@@ -14,8 +15,6 @@ export class AuthService {
 
   async signIn(data: AuthLogin): Promise<JwtResponse> {
     const user = await this.userService.findByUsername(data);
-
-    
     const payload = { sub: user.id, username: user.username };
     return {
       token: this.jwtService.sign(payload),
@@ -35,5 +34,13 @@ export class AuthService {
       return 'success';
     }
     return 'error';
+  }
+
+  async profile(id: string): Promise<User | string> {
+    const user = await this.userService.findOne(id);;
+    if (user) {
+      return user;
+    }
+    return 'Not found profile';
   }
 }

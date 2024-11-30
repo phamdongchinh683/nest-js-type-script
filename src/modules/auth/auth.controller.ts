@@ -6,8 +6,10 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
+import { Roles } from 'src/decorators/roles.decorator';
+import { User } from 'src/entities/user.model';
 import { ResponseData } from 'src/global/globalClass';
-import { httpMessage, httpStatus } from 'src/global/globalEnum';
+import { httpMessage, httpStatus, Role } from 'src/global/globalEnum';
 import { AuthGuard } from '../../guards/auth.guard';
 import { AuthService } from './auth.service';
 import { AuthLogin } from './dto/auth-login.dto';
@@ -52,8 +54,22 @@ export class AuthController {
     }
   }
   @UseGuards(AuthGuard)
+  @Roles(Role.User)
   @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
+  async getProfile(@Request() req) {
+    try {
+      const user = await this.authService.profile(req.user.id);
+      return new ResponseData<User | string>(
+        user,
+        httpStatus.SUCCESS,
+        httpMessage.SUCCESS,
+      );
+    } catch (e: any) {
+      return new ResponseData<string>(
+        e.message || 'Authentication failed',
+        httpStatus.ERROR,
+        httpMessage.ERROR,
+      );
+    } 
   }
 }
