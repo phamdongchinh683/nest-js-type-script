@@ -1,3 +1,4 @@
+import { Role } from 'src/global/globalEnum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
@@ -12,4 +13,10 @@ export class User {
   fullName: string;
   @Column({ type: 'int' })
   age: number;
+  @Column({
+    type: 'enum',
+    enum: Role,
+  })
+  roles: Role[];
 }
+

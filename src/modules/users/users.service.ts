@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.model';
+import { comparePassword } from 'src/utils/hashHelper';
 import { Repository } from 'typeorm/repository/Repository';
 import { AuthLogin } from '../auth/dto/auth-login.dto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -44,7 +45,8 @@ export class UsersService {
     const user = await this.usersRepository.findOne({
       where: { username: data.username },
     });
-    if (!user || user.password !== data.password) {
+    const compare = await comparePassword(data.password, user.password);
+    if (!user || !compare) {
       throw new UnauthorizedException('Username or password is incorrect');
     }
     return user;

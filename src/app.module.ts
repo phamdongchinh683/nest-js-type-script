@@ -20,7 +20,8 @@ dotenv.config({ debug: false });
     UsersModule,
   ],
   controllers: [UsersController, AuthController],
-  providers: [UsersService, AuthService],
+  providers: [UsersService, AuthService,
+  ],
 })
 export class AppModule implements NestModule {
   constructor(private dataSource: DataSource) { }

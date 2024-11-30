@@ -8,9 +8,10 @@ import {
 } from '@nestjs/common';
 import { ResponseData } from 'src/global/globalClass';
 import { httpMessage, httpStatus } from 'src/global/globalEnum';
-import { AuthGuard } from './auth.guard';
+import { AuthGuard } from '../../guards/auth.guard';
 import { AuthService } from './auth.service';
 import { AuthLogin } from './dto/auth-login.dto';
+import { AuthSignUp } from './dto/auth-signup.dto';
 import { JwtResponse } from './dto/jwt-response.dto';
 
 @Controller('api/auth')
@@ -21,6 +22,23 @@ export class AuthController {
     try {
       const user = await this.authService.signIn(data);
       return new ResponseData<JwtResponse>(
+        user,
+        httpStatus.SUCCESS,
+        httpMessage.SUCCESS,
+      );
+    } catch (e: any) {
+      return new ResponseData<string>(
+        e.message,
+        httpStatus.ERROR,
+        httpMessage.ERROR,
+      );
+    }
+  }
+  @Post('register')
+  async signUp(@Body() data: AuthSignUp) {
+    try {
+      const user = await this.authService.register(data);
+      return new ResponseData<string>(
         user,
         httpStatus.SUCCESS,
         httpMessage.SUCCESS,
