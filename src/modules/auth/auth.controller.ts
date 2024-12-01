@@ -4,14 +4,18 @@ import {
   Get,
   Post,
   Request,
-  UseGuards,
+  UseFilters,
+  UseGuards
 } from '@nestjs/common';
 import { Roles } from 'src/decorators/roles.decorator';
 import { User } from 'src/entities/user.model';
+import { ForbiddenException } from 'src/exceptions/forbidden.exception';
+import { HttpExceptionFilter } from 'src/filters/http-exception.filter';
 import { ResponseData } from 'src/global/globalClass';
 import { httpMessage, httpStatus, Role } from 'src/global/globalEnum';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { AuthGuard } from '../../guards/auth.guard';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { AuthLogin } from './dto/auth-login.dto';
 import { AuthSignUp } from './dto/auth-signup.dto';
@@ -67,10 +71,18 @@ export class AuthController {
       );
     } catch (e: any) {
       return new ResponseData<string>(
-        e.message || 'Authentication failed',
+        e.message,
         httpStatus.ERROR,
         httpMessage.ERROR,
       );
     }
   }
+
+  @Post()
+  @UseFilters(HttpExceptionFilter)
+  async create(@Body() createUserDto: CreateUserDto) {
+    console.log(createUserDto)
+    throw new ForbiddenException();
+  }
+
 }
