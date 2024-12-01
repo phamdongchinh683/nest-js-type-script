@@ -6,11 +6,11 @@ import { configAppModule } from './configs/config.module';
 import { JwtAppModule } from './configs/jwt.config';
 import { typeOrmConfig } from './configs/typeorm.config';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { AdminController } from './modules/admin/admin.controller';
 import { AuthController } from './modules/auth/auth.controller';
-import { AuthService } from './modules/auth/auth.service';
 import { UsersController } from './modules/users/users.controller';
 import { UsersModule } from './modules/users/users.module';
-import { UsersService } from './modules/users/users.service';
+import { providers } from './providers/app.provider';
 dotenv.config({ debug: false });
 @Module({
   imports: [
@@ -19,8 +19,9 @@ dotenv.config({ debug: false });
     JwtAppModule,
     UsersModule,
   ],
-  controllers: [UsersController, AuthController],
-  providers: [UsersService, AuthService,
+  controllers: [UsersController, AuthController, AdminController],
+  providers: [
+    ...providers
   ],
 })
 export class AppModule implements NestModule {
