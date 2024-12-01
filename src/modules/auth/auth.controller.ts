@@ -10,6 +10,7 @@ import { Roles } from 'src/decorators/roles.decorator';
 import { User } from 'src/entities/user.model';
 import { ResponseData } from 'src/global/globalClass';
 import { httpMessage, httpStatus, Role } from 'src/global/globalEnum';
+import { RolesGuard } from 'src/guards/roles.guard';
 import { AuthGuard } from '../../guards/auth.guard';
 import { AuthService } from './auth.service';
 import { AuthLogin } from './dto/auth-login.dto';
@@ -53,7 +54,7 @@ export class AuthController {
       );
     }
   }
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.User)
   @Get('profile')
   async getProfile(@Request() req) {
@@ -70,6 +71,6 @@ export class AuthController {
         httpStatus.ERROR,
         httpMessage.ERROR,
       );
-    } 
+    }
   }
 }

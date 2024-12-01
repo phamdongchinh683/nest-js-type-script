@@ -1,12 +1,12 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { comparePassword } from 'src/common/utils/hash.utils';
 import { User } from 'src/entities/user.model';
-import { comparePassword } from 'src/utils/hashHelper';
 import { Repository } from 'typeorm/repository/Repository';
 import { AuthLogin } from '../auth/dto/auth-login.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserResponse } from './dto/user-response.dto';
+import { UserResponsePayload } from './dto/user-response-payload.dto';
 
 @Injectable()
 export class UsersService {
@@ -30,7 +30,7 @@ export class UsersService {
     return `Updated`;
   }
 
-  async findOne(id: string): Promise<User | null> {
+  async findOne(id: string): Promise<UserResponsePayload | null> {
     return this.usersRepository.findOneBy({ id });
   }
 
@@ -41,7 +41,7 @@ export class UsersService {
     }
     return `deleted`;
   }
-  async findByUsername(data: AuthLogin): Promise<UserResponse> {
+  async findByUsername(data: AuthLogin): Promise<UserResponsePayload> {
     const user = await this.usersRepository.findOne({
       where: { username: data.username },
     });

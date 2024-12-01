@@ -11,4 +11,5 @@ export enum httpMessage {
 export enum Role {
   User = 'user',
   Admin = 'admin',
-} 
+}
+
