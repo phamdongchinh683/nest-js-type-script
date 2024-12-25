@@ -15,6 +15,7 @@ dotenv.config({ debug: false });
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig()),
+    // GraphQLConfigModule,
     configAppModule,
     JwtAppModule,
     UsersModule,

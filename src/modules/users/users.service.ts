@@ -30,7 +30,7 @@ export class UsersService {
     return `Updated`;
   }
 
-  async findOne(id: string): Promise<UserResponsePayload | null> {
+  async findOne(id: string): Promise<User | null> {
     return this.usersRepository.findOneBy({ id });
   }
 

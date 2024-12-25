@@ -15,6 +15,7 @@ import { ResponseData } from 'src/global/globalClass';
 import { httpMessage, httpStatus } from 'src/global/globalEnum';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserResponsePayload } from './dto/user-response-payload.dto';
 import { UsersService } from './users.service';
 
 @Controller('api/users')
@@ -64,7 +65,7 @@ export class UsersController {
   async findOneUser(
     @Param('id')
     id: string,
-  ): Promise<ResponseData<User>> {
+  ): Promise<ResponseData<UserResponsePayload>> {
     const user = await this.usersService.findOne(id);
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
@@ -92,6 +93,7 @@ export class UsersController {
       httpMessage.SUCCESS,
     );
   }
+
 
   @Delete(':id')
   async deleteUser(
