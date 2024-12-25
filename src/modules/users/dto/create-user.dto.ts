@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsNumber, IsString, MinLength } from 'class-validator';
+import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsString, MinLength } from 'class-validator';
+import { Role } from 'src/global/globalEnum';
 
 export class CreateUserDto {
   @IsString()
@@ -14,4 +15,7 @@ export class CreateUserDto {
   @IsNumber()
   @IsNotEmpty()
   age: number;
+  @IsArray()
+  @IsEnum(Role, { each: true, message: 'Roles must be valid admin or user values.' })
+  roles: Role[];
 }

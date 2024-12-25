@@ -25,7 +25,8 @@ export class AuthService {
       username: data.username,
       password: password,
       age: data.age,
-      fullName: data.fullName
+      fullName: data.fullName,
+      roles: data.roles
     }
     const result = await this.userService.signUp(newUser);
     if (result) {
