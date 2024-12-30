@@ -1,13 +1,18 @@
+import { Field, ObjectType } from '@nestjs/graphql';
 import { Role } from 'src/global/globalEnum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
+import { Post } from './post.model';
+@ObjectType()
 @Entity('users')
 export class User {
+  @Field()
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  username: string;
+  @Field()
+  @Column({
+    unique: true
+  }) username: string;
 
   @Column()
   password: string;
@@ -23,4 +28,7 @@ export class User {
     enum: Role,
   })
   roles: Role[];
+  @Field(() => [Post])
+  posts: Post[];
+
 }

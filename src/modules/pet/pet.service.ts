@@ -10,11 +10,6 @@ export class PetService {
   private readonly petRepository: Repository<Pet>,
  ) { }
 
- private pets: Pet[] = [
-  { id: '1', name: 'Max' },
-  { id: '2', name: 'Bella' },
- ];
-
  async getPets(): Promise<Pet[]> {
   return this.petRepository.find();
  }

@@ -15,6 +15,7 @@ import { ResponseData } from 'src/global/globalClass';
 import { httpMessage, httpStatus, Role } from 'src/global/globalEnum';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { AuthGuard } from '../../guards/auth.guard';
+import { PostService } from '../post/post.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { AuthLogin } from './dto/auth-login.dto';
@@ -23,7 +24,9 @@ import { JwtResponse } from './dto/jwt-response.dto';
 
 @Controller('api/auth')
 export class AuthController {
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService,
+    private postsService: PostService,
+  ) { }
   @Post('login')
   async signIn(@Body() data: AuthLogin) {
     try {
@@ -80,10 +83,26 @@ export class AuthController {
 
   @Post()
   @UseFilters(HttpExceptionFilter)
-  async create(@Body() createUserDto: CreateUserDto) {
-    console.log(createUserDto)
+  async create(@Body() data: CreateUserDto) {
+    console.log(data)
     throw new ForbiddenException();
   }
 
- 
+  // async createPost(@Body() data: AuthCreatePost) {
+  //   try {
+  //     const user = await this.authService.signIn(data);
+  //     return new ResponseData<JwtResponse>(
+  //       user,
+  //       httpStatus.SUCCESS,
+  //       httpMessage.SUCCESS,
+  //     );
+  //   } catch (e: any) {
+  //     return new ResponseData<string>(
+  //       e.message,
+  //       httpStatus.ERROR,
+  //       httpMessage.ERROR,
+  //     );
+  //   }
+  // }
+
 }

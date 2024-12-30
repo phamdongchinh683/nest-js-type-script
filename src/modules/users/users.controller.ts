@@ -10,6 +10,7 @@ import {
   UsePipes,
   ValidationPipe
 } from '@nestjs/common';
+import { Query } from '@nestjs/graphql';
 import { User } from 'src/entities/user.model';
 import { ResponseData } from 'src/global/globalClass';
 import { httpMessage, httpStatus } from 'src/global/globalEnum';
@@ -22,6 +23,7 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
   @Get()
+  @Query(() => [User])
   async findAll(): Promise<ResponseData<User[] | string>> {
     try {
       const users = await this.usersService.findAll();
