@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { hashPassword } from 'src/common/utils/hash.utils';
 import { User } from 'src/entities/user.model';
-import { CreateUserDto } from '../users/dto/create-user.dto';
-import { UsersService } from '../users/users.service';
+import { CreateUserDto } from '../user/dto/create-user.dto';
+import { UserService } from '../user/user.service';
 import { AuthLogin } from './dto/auth-login.dto';
 import { JwtResponse } from './dto/jwt-response.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UsersService,
+    private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) { }
   async signIn(data: AuthLogin): Promise<JwtResponse> {

@@ -9,8 +9,6 @@ export class PostResolver {
  getPosts() {
   return this.postService.getPosts();
  }
-
-
  @Mutation(() => Post)
  post(@Args('id') id: string) {
   return this.postService.detailPost(id);

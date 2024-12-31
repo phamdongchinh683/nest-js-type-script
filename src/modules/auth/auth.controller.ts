@@ -5,8 +5,7 @@ import {
   Post,
   Request,
   UseFilters,
-  UseGuards,
-  UseInterceptors
+  UseGuards
 } from '@nestjs/common';
 import { Roles } from 'src/decorators/roles.decorator';
 import { User } from 'src/entities/user.model';
@@ -15,10 +14,9 @@ import { HttpExceptionFilter } from 'src/filters/http-exception.filter';
 import { ResponseData } from 'src/global/globalClass';
 import { httpMessage, httpStatus, Role } from 'src/global/globalEnum';
 import { RolesGuard } from 'src/guards/roles.guard';
-import { LoggerInterceptor } from 'src/interceptors/logger.interceptor';
 import { AuthGuard } from '../../guards/auth.guard';
 import { PostService } from '../post/post.service';
-import { CreateUserDto } from '../users/dto/create-user.dto';
+import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { AuthLogin } from './dto/auth-login.dto';
 import { AuthSignUp } from './dto/auth-signup.dto';
@@ -64,7 +62,6 @@ export class AuthController {
     }
   }
   @UseGuards(AuthGuard, RolesGuard)
-  @UseInterceptors(LoggerInterceptor)
   @Roles(Role.User)
   @Get('profile')
   async getProfile(@Request() req) {
@@ -90,6 +87,8 @@ export class AuthController {
     console.log(data)
     throw new ForbiddenException();
   }
+
+
 
 
 }

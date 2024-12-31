@@ -17,11 +17,11 @@ import { httpMessage, httpStatus } from 'src/global/globalEnum';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponsePayload } from './dto/user-response-payload.dto';
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 
 @Controller('api/users')
-export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+export class UserController {
+  constructor(private readonly usersService: UserService) { }
   @Get()
   @Query(() => [User])
   async findAll(): Promise<ResponseData<User[] | string>> {

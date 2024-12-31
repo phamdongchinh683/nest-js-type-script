@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './filters/all-exceptions.filter';
+import { LoggerInterceptor } from './interceptors/logger.interceptor';
 dotenv.config({ debug: false });
 
 async function bootstrap() {
@@ -21,6 +22,7 @@ async function bootstrap() {
   );
   app.enableCors();
   app.use(helmet());
+  app.useGlobalInterceptors(new LoggerInterceptor());
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
   const port = process.env.PORT || 3000;
   await app.listen(port);

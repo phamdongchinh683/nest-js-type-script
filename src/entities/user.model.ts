@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Role } from 'src/global/globalEnum';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Post } from './post.model';
 @ObjectType()
 @Entity('users')
@@ -29,6 +29,11 @@ export class User {
   })
   roles: Role[];
   @Field(() => [Post])
+  @OneToMany(() => Post, (post) => post.author)
   posts: Post[];
+  @CreateDateColumn()
+  createdAt: Date;
 
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

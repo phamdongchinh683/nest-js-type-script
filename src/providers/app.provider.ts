@@ -1,13 +1,11 @@
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from 'src/filters/http-exception.filter';
 import { AuthService } from 'src/modules/auth/auth.service';
-import { PetService } from 'src/modules/pet/pet.service';
 import { PostService } from 'src/modules/post/post.service';
-import { UsersService } from 'src/modules/users/users.service';
+import { UserService } from 'src/modules/user/user.service';
 
-export const providers = [
- UsersService,
- PetService,
+export const providersApp = [
+ UserService,
  AuthService,
  PostService,
  {
@@ -16,5 +14,5 @@ export const providers = [
  },
 ];
 
-export { AuthService, HttpExceptionFilter, PetService, PostService, UsersService };
+export { AuthService, HttpExceptionFilter, PostService, UserService };
 
