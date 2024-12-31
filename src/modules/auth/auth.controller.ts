@@ -15,7 +15,7 @@ import { HttpExceptionFilter } from 'src/filters/http-exception.filter';
 import { ResponseData } from 'src/global/globalClass';
 import { httpMessage, httpStatus, Role } from 'src/global/globalEnum';
 import { RolesGuard } from 'src/guards/roles.guard';
-import { LoggerInterceptor } from 'src/Interceptors/logger.interceptor';
+import { LoggerInterceptor } from 'src/interceptors/logger.interceptor';
 import { AuthGuard } from '../../guards/auth.guard';
 import { PostService } from '../post/post.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
