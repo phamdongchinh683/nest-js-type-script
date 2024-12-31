@@ -5,7 +5,8 @@ import {
   Post,
   Request,
   UseFilters,
-  UseGuards
+  UseGuards,
+  UseInterceptors
 } from '@nestjs/common';
 import { Roles } from 'src/decorators/roles.decorator';
 import { User } from 'src/entities/user.model';
@@ -14,6 +15,7 @@ import { HttpExceptionFilter } from 'src/filters/http-exception.filter';
 import { ResponseData } from 'src/global/globalClass';
 import { httpMessage, httpStatus, Role } from 'src/global/globalEnum';
 import { RolesGuard } from 'src/guards/roles.guard';
+import { LoggerInterceptor } from 'src/Interceptors/logger.interceptor';
 import { AuthGuard } from '../../guards/auth.guard';
 import { PostService } from '../post/post.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
@@ -62,6 +64,7 @@ export class AuthController {
     }
   }
   @UseGuards(AuthGuard, RolesGuard)
+  @UseInterceptors(LoggerInterceptor)
   @Roles(Role.User)
   @Get('profile')
   async getProfile(@Request() req) {
@@ -88,21 +91,5 @@ export class AuthController {
     throw new ForbiddenException();
   }
 
-  // async createPost(@Body() data: AuthCreatePost) {
-  //   try {
-  //     const user = await this.authService.signIn(data);
-  //     return new ResponseData<JwtResponse>(
-  //       user,
-  //       httpStatus.SUCCESS,
-  //       httpMessage.SUCCESS,
-  //     );
-  //   } catch (e: any) {
-  //     return new ResponseData<string>(
-  //       e.message,
-  //       httpStatus.ERROR,
-  //       httpMessage.ERROR,
-  //     );
-  //   }
-  // }
 
 }

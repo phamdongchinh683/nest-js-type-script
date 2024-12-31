@@ -35,6 +35,6 @@ dotenv.config({ debug: false });
 export class AppModule implements NestModule {
   constructor(private dataSource: DataSource) { }
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes(UsersController);
+    consumer.apply(LoggerMiddleware).forRoutes("*");
   }
 }
