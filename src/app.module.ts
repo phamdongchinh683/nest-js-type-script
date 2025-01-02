@@ -1,3 +1,4 @@
+import { CacheModule } from '@nestjs/cache-manager';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
@@ -15,6 +16,7 @@ dotenv.config({ debug: false });
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig()),
+    CacheModule.register(),
     GraphQLConfigModule,
     configAppModule,
     JwtAppModule,
