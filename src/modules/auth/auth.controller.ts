@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { Roles } from 'src/decorators/roles.decorator';
 import { User } from 'src/entities/user.model';
+
 import { ResponseData } from 'src/global/globalClass';
 import { httpMessage, httpStatus, Role } from 'src/global/globalEnum';
 import { RolesGuard } from 'src/guards/roles.guard';
@@ -16,6 +17,7 @@ import { AuthGuard } from '../../guards/auth.guard';
 import { CommentService } from '../comment/comment.service';
 import { CommentCreateDto } from '../comment/dto/comment-create-dto';
 import { CreatePostDto } from '../post/dto/post-create.dto';
+import { PostListDto } from '../post/dto/post-list.dto';
 import { PostService } from '../post/post.service';
 import { AuthService } from './auth.service';
 import { AuthLogin } from './dto/auth-login.dto';
@@ -95,7 +97,7 @@ export class AuthController {
   @Post()
   async createPost(@Request() req, @Body() data: CreatePostDto) {
     try {
-      const result = await this.postsService.createPost(data, req.user.id);
+      const result = await this.postsService.createPost(data, req.user.sub);
       return new ResponseData<string>(
         result,
         httpStatus.SUCCESS,
@@ -112,11 +114,52 @@ export class AuthController {
 
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.User)
+  @Get('posts')
+  async getMyPosts(@Request() req) {
+    try {
+      const result = await this.postsService.getAllPost(req.user.sub);
+      return new ResponseData<PostListDto[] | string>(
+        result,
+        httpStatus.SUCCESS,
+        httpMessage.SUCCESS,
+      );
+    } catch (e: any) {
+      return new ResponseData<PostListDto[] | string>(
+        e.message,
+        httpStatus.ERROR,
+        httpMessage.ERROR,
+      );
+    }
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.User)
+  @Get('post/:id')
+  async detailPost(@Request() req) {
+    try {
+      const result = await this.postsService.detailPost(req.user.sub);
+      return new ResponseData<any | string>(
+        result,
+        httpStatus.SUCCESS,
+        httpMessage.SUCCESS,
+      );
+    } catch (e: any) {
+      return new ResponseData<any | string>(
+        e.message,
+        httpStatus.ERROR,
+        httpMessage.ERROR,
+      );
+    }
+  }
+
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.User)
   @Post(":postId")
   async postComment(@Param('postId') postId: string,
     @Request() req, @Body() data: CommentCreateDto) {
     try {
-      const result = await this.commentService.createComment(data, req.user.id, postId);
+      const result = await this.commentService.createComment(data, req.user.sub, postId);
       return new ResponseData<string>(
         result,
         httpStatus.SUCCESS,

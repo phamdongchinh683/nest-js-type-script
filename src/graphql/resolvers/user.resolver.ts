@@ -9,5 +9,4 @@ export class UserResolver {
  getUsers() {
   return this.usersService.findAll();
  }
-
 }

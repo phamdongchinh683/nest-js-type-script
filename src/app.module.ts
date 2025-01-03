@@ -12,6 +12,7 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { PostModule } from './modules/post/post.module';
 import { UsersModule } from './modules/user/user.module';
 import { providersApp } from './providers/app.provider';
+import { CommentModule } from './modules/comment/comment.module';
 dotenv.config({ debug: false });
 @Module({
   imports: [
@@ -22,6 +23,7 @@ dotenv.config({ debug: false });
     JwtAppModule,
     UsersModule,
     PostModule,
+    CommentModule
   ],
   controllers: [...controllersApp],
   providers: [...providersApp],

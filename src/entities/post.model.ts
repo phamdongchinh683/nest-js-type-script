@@ -1,6 +1,7 @@
 
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Comment } from './comment.model';
 import { User } from './user.model';
 
 @ObjectType()
@@ -20,6 +21,8 @@ export class Post {
 
  @ManyToOne(() => User, (user) => user.posts, { onDelete: 'CASCADE' })
  author: User;
+ @OneToMany(() => Comment, (comment) => comment.post, { cascade: true })
+ comments: Comment[];
  @CreateDateColumn()
  createdAt: Date;
 
