@@ -1,8 +1,7 @@
-import { Body, Controller, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import { Query } from '@nestjs/graphql';
 import { ResponseData } from 'src/global/globalClass';
 import { httpMessage, httpStatus } from 'src/global/globalEnum';
-import { CreatePostDto } from './dto/post-create.dto';
 import { PostDetailDto } from './dto/post-detail.dto';
 import { PostService } from './post.service';
 
@@ -16,26 +15,26 @@ export class PostController {
   return this.postService.getPosts();
  }
 
- @Post()
- @UsePipes(new ValidationPipe({ transform: true }))
- async create(
-  @Body() data: CreatePostDto,
- ): Promise<ResponseData<string>> {
-  try {
-   const message = await this.postService.createPost(data);
-   return new ResponseData<string>(
-    message,
-    httpStatus.SUCCESS,
-    httpMessage.SUCCESS,
-   );
-  } catch (e) {
-   return new ResponseData<string>(
-    e.message,
-    httpStatus.ERROR,
-    httpMessage.ERROR,
-   );
-  }
- }
+ // @Post()
+ // @UsePipes(new ValidationPipe({ transform: true }))
+ // async create(
+ //  @Body() data: CreatePostDto,
+ // ): Promise<ResponseData<string>> {
+ //  try {
+ //   const message = await this.postService.createPost(data);
+ //   return new ResponseData<string>(
+ //    message,
+ //    httpStatus.SUCCESS,
+ //    httpMessage.SUCCESS,
+ //   );
+ //  } catch (e) {
+ //   return new ResponseData<string>(
+ //    e.message,
+ //    httpStatus.ERROR,
+ //    httpMessage.ERROR,
+ //   );
+ //  }
+ // }
 
  @Get(':id')
  async findPostById(@Param('id')

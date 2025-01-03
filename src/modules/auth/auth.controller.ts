@@ -2,21 +2,21 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Request,
-  UseFilters,
   UseGuards
 } from '@nestjs/common';
 import { Roles } from 'src/decorators/roles.decorator';
 import { User } from 'src/entities/user.model';
-import { ForbiddenException } from 'src/exceptions/forbidden.exception';
-import { HttpExceptionFilter } from 'src/filters/http-exception.filter';
 import { ResponseData } from 'src/global/globalClass';
 import { httpMessage, httpStatus, Role } from 'src/global/globalEnum';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { AuthGuard } from '../../guards/auth.guard';
+import { CommentService } from '../comment/comment.service';
+import { CommentCreateDto } from '../comment/dto/comment-create-dto';
+import { CreatePostDto } from '../post/dto/post-create.dto';
 import { PostService } from '../post/post.service';
-import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { AuthLogin } from './dto/auth-login.dto';
 import { AuthSignUp } from './dto/auth-signup.dto';
@@ -26,6 +26,7 @@ import { JwtResponse } from './dto/jwt-response.dto';
 export class AuthController {
   constructor(private authService: AuthService,
     private postsService: PostService,
+    private commentService: CommentService
   ) { }
   @Post('login')
   async signIn(@Body() data: AuthLogin) {
@@ -81,14 +82,52 @@ export class AuthController {
     }
   }
 
+  // @Post()
+  // @UseFilters(HttpExceptionFilter)
+  // async create(@Body() data: CreateUserDto) {
+  //   console.log(data)
+  //   throw new ForbiddenException();
+  // }
+
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.User)
   @Post()
-  @UseFilters(HttpExceptionFilter)
-  async create(@Body() data: CreateUserDto) {
-    console.log(data)
-    throw new ForbiddenException();
+  async createPost(@Request() req, @Body() data: CreatePostDto) {
+    try {
+      const result = await this.postsService.createPost(data, req.user.id);
+      return new ResponseData<string>(
+        result,
+        httpStatus.SUCCESS,
+        httpMessage.SUCCESS,
+      );
+    } catch (e: any) {
+      return new ResponseData<string>(
+        e.message,
+        httpStatus.ERROR,
+        httpMessage.ERROR,
+      );
+    }
   }
 
-
-
-
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.User)
+  @Post(":postId")
+  async postComment(@Param('postId') postId: string,
+    @Request() req, @Body() data: CommentCreateDto) {
+    try {
+      const result = await this.commentService.createComment(data, req.user.id, postId);
+      return new ResponseData<string>(
+        result,
+        httpStatus.SUCCESS,
+        httpMessage.SUCCESS,
+      );
+    } catch (e: any) {
+      return new ResponseData<string>(
+        e.message,
+        httpStatus.ERROR,
+        httpMessage.ERROR,
+      );
+    }
+  }
 }

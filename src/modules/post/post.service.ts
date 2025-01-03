@@ -17,8 +17,13 @@ export class PostService {
   return this.postRepository.find();
  }
 
- async createPost(data: CreatePostDto): Promise<string> {
-  this.postRepository.save(data);
+ async createPost(data: CreatePostDto, userId: string): Promise<string> {
+  const newPost = this.postRepository.create({
+   ...data,
+   author: { id: userId },
+  });
+  this.postRepository.save(newPost);
+
   return "Created post"
  }
 
