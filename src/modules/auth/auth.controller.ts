@@ -31,9 +31,13 @@ export class AuthController {
     private commentService: CommentService
   ) { }
   @Post('login')
-  async signIn(@Body() data: AuthLogin) {
+  async signIn(@Request() req, @Body() data: AuthLogin) {
+    const newData = {
+      username: req.user.username,
+      password: data.password
+    }
     try {
-      const user = await this.authService.signIn(data);
+      const user = await this.authService.signIn(newData);
       return new ResponseData<JwtResponse>(
         user,
         httpStatus.SUCCESS,

@@ -7,24 +7,32 @@ import {
   Param,
   Patch,
   Post,
+  Req,
+  UseGuards,
   UsePipes,
   ValidationPipe
 } from '@nestjs/common';
 import { Query } from '@nestjs/graphql';
+import { Roles } from 'src/decorators/roles.decorator';
 import { User } from 'src/entities/user.model';
 import { ResponseData } from 'src/global/globalClass';
-import { httpMessage, httpStatus } from 'src/global/globalEnum';
+import { httpMessage, httpStatus, Role } from 'src/global/globalEnum';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { RolesGuard } from 'src/guards/roles.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponsePayload } from './dto/user-response-payload.dto';
 import { UserService } from './user.service';
 
-@Controller('api/users')
+@Controller('api/user')
 export class UserController {
   constructor(private readonly usersService: UserService) { }
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Get()
   @Query(() => [User])
-  async findAll(): Promise<ResponseData<User[] | string>> {
+  async findAll(@Req() req: Request): Promise<ResponseData<User[] | string>> {
+    console.log(req['example']);
     try {
       const users = await this.usersService.findAll();
       return new ResponseData<User[] | string>(

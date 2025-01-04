@@ -14,5 +14,3 @@ export const providersApp = [
  },
 ];
 
-export { AuthService, HttpExceptionFilter, PostService, UserService };
-

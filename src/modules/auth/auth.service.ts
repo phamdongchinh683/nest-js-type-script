@@ -14,7 +14,7 @@ export class AuthService {
   ) { }
   async signIn(data: AuthLogin): Promise<JwtResponse> {
     const user = await this.userService.findByUsername(data);
-    const payload = { sub: user.id, username: user.username, roles: user.roles };
+    const payload = { sub: user.id, roles: user.roles };
     return {
       token: this.jwtService.sign(payload),
     };

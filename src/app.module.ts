@@ -9,10 +9,12 @@ import { JwtAppModule } from './configs/jwt.config';
 import { typeOrmConfig } from './configs/typeorm.config';
 import { controllersApp } from './controllers/app.comtroller';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { UserRoleMiddleware } from './middlewares/userRole.middleware';
+import { CommentModule } from './modules/comment/comment.module';
 import { PostModule } from './modules/post/post.module';
 import { UsersModule } from './modules/user/user.module';
 import { providersApp } from './providers/app.provider';
-import { CommentModule } from './modules/comment/comment.module';
+import { AuthController } from './modules/auth/auth.controller';
 dotenv.config({ debug: false });
 @Module({
   imports: [
@@ -32,5 +34,6 @@ export class AppModule implements NestModule {
   constructor(private dataSource: DataSource) { }
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes("*");
+    consumer.apply(UserRoleMiddleware).forRoutes(AuthController)
   }
 }

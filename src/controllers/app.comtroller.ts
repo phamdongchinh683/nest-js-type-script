@@ -6,5 +6,3 @@ export const controllersApp = [
  UserController, AuthController, PostController
 ];
 
-export { AuthController, PostController, UserController };
-
